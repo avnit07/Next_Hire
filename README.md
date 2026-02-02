@@ -11,7 +11,7 @@ The platform supports two types of users — **Applicants** and **Recruiters** �
 
 Recruiters can create company profiles and post job openings, while applicants can explore jobs and apply to them.
 
---
+---
 
 ## 👥 User Roles
 
@@ -19,10 +19,10 @@ Recruiters can create company profiles and post job openings, while applicants c
 - Register and login
 - View available job listings
 - Apply for jobs
-- Track applied jobs 
+- Track applied jobs
 
 ### 🏢 Recruiter
 - Register and login
 - Create and manage company profiles
 - Post job openings
-- Manage job applications 
+- Manage job applications
