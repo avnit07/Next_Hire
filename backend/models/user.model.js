@@ -1,44 +1,69 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    fullName:{
+    fullName: {
         type: String,
-       required: true
+        required: true
     },
-     email:{
+
+    email: {
         type: String,
-       required: true,
-        unique:true
+        required: true,
+        unique: true
     },
-    phoneNumber:{
-        type: Number,
-        required:true
+
+    phoneNumber: {
+        type: String,
+        required: true
     },
-    password:{
-        type:String,
-        required:true      
+
+    password: {
+        type: String,
+        required: true
     },
-    role:{
-        type:String,
-        enum:['student','recruiter'],
-        required:true
+
+    role: {
+        type: String,
+        enum: ['student', 'recruiter'],
+        required: true
     },
-    profile:{
-        bio:{type:String},
-        skills:[{type:String}],
-        resume:{type:String},
-        resumeOriginalName:{type:String},
-        company:{
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'company'
+
+    profile: {
+        bio: {
+            type: String
         },
-        profilePhoto:{
-            type:String,
-            default:""
+
+        skills: {
+            type: [String],
+            lowercase: true,
+            trim: true,
+            validate: {
+                validator: function (arr) {
+                    return arr.length <= 50;
+                },
+                message: 'Maximum 50 skills allowed'
+            }
+        },
+
+        resume: {
+            url: {
+                type: String
+            },
+            publicId: {
+                type: String
+            },
+            uploadedAt: {
+                type: Date,
+                default: Date.now
+            }
+        },
+
+        profilePhoto: {
+            type: String,
+            default: ""
         }
-    },
+    }
 
-
-},{timestamps:true});
+}, { timestamps: true });
 
 export const User = mongoose.model('User', userSchema);

@@ -1,51 +1,57 @@
 import mongoose from "mongoose";
 
-const jobSchema = newMongoose.Schema({
-    title:{
-        type:String,
-        required:true
+const jobSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true
     },
-     description:{
-        type:String,
-        required:true
+    description: {
+        type: String,
+        required: true
     },
-     requirements:{
-        type:String,
-        required:true
+    requirements: {
+        type: [String],
+        required: true
     },
-     salary:{
-        type:Number,
-        required:true
+    salary: {
+        type: Number,
+        required: true
     },
-    location:{
-        type:String,
-        required:true
+    experience: {
+        type: Number,
+        required: true,
+        min: 0,  
+        max: 50  
     },
-    jobType:{
-        type:String,
-        required:true
+    location: {
+        type: String,
+        required: true
     },
-     Position:{
-        type:String,
-        required:true
+    jobType: {
+        type: String,
+        required: true,
+        enum: ['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance']
     },
-    company:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'Company',
-        required:true
+    position: {
+        type: Number,  
+        required: true
     },
-    created_by:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'User',
-        required:true
+    company: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Company',
+        required: true
     },
-    applications:[
+    created_by: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
+    },
+    applications: [
         {
-            type:mongoose.Schema.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Application',
         }
     ]
+}, { timestamps: true });
 
-},{timestamps:true});
-
-export const Job = mongoose.model("Job",jobSchema);
+export const Job = mongoose.model("Job", jobSchema);

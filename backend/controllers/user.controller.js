@@ -6,6 +6,8 @@ import jwt from "jsonwebtoken";
 export const register = async (req, res) => {
     try {
         const { fullName, email, phoneNumber, password, role } = req.body;
+
+        // validation
         if (!fullName || !email || !phoneNumber || !password || !role) {
             return res.status(400).json({
                 message: "Something is missing",
@@ -21,8 +23,11 @@ export const register = async (req, res) => {
                 success: false,
             });
         }
+
+        // password hashing
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // create user
         await User.create({
             fullName,
             email,
@@ -35,8 +40,14 @@ export const register = async (req, res) => {
             message: "Account created successfully",
             success: true,
         });
+
     } catch (error) {
-        console.log(error);
+        console.error("Error in register:", error);
+
+        return res.status(500).json({
+            message: "Something went wrong. Please try again.",
+            success: false
+        });
     }
 };
 
@@ -45,6 +56,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     try {
         const { email, password, role } = req.body;
+        // validate
         if (!email || !password || !role) {
             return res.status(400).json({
                 message: "Something is missing",
@@ -53,10 +65,10 @@ export const login = async (req, res) => {
         }
 
         // checking user exist or not
-        const user = await User.findOne({ email });
+        let user = await User.findOne({ email });
         if (!user) {
             return res.status(400).json({
-                message: "Incorrect email or password",
+                message: "user does not exist",
                 success: false,
             });
         }
@@ -76,15 +88,20 @@ export const login = async (req, res) => {
             });
         }
 
-        // Payload data stored inside JWT
+        // Create payload
         const tokenData = {
             userId: user._id,
         };
 
         // Generate JWT token with 1-day expiry
-        const token = await jwt.sign(tokenData, process.env.SECRET_KEY, {
-            expiresIn: "1d",
-        });
+        const token = await jwt.sign(
+            tokenData,
+            process.env.SECRET_KEY,
+            {
+                expiresIn:
+                    "1d",
+            }
+        );
 
 
         user = {
@@ -96,18 +113,24 @@ export const login = async (req, res) => {
             profile: user.profile,
         }
 
-        return res.status(200).cookie("token", token, {
-            maxAge: 1 * 24 * 60 * 60 * 1000,
-            httpOnly: true,
-            sameSite: "strict",
-        })
+        // sending token to client 
+        return res.status(200)
+            .cookie("token", token, {
+                maxAge: 1 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+                sameSite: "strict",
+            })
             .json({
                 message: `Welcome back ${user.fullName}`,
                 user,
                 success: true,
             });
     } catch (error) {
-        console.log(error);
+        console.error(error);
+        return res.status(500).json({
+            message: "Internal server error",
+            success: false,
+        });
     }
 }
 
@@ -120,7 +143,11 @@ export const logout = async (req, res) => {
         })
 
     } catch (error) {
-        console.log(e);
+        console.error(error);
+        return res.status(500).json({
+            message: "Logout failed",
+            success: false
+        });
     }
 }
 
@@ -129,16 +156,13 @@ export const updateProfile = async (req, res) => {
     try {
         const { fullName, email, phoneNumber, bio, skills } = req.body;
         const file = req.file;
-        if (!fullName || !email || !phoneNumber || !bio || !skills) {
-            return res.status(400).json({
-                message: "Something is missing",
-                success: false,
-            });
-        };
 
         // cloudinary will be here
+        let skillsArray;
+        if (skills) {
+            skillsArray = skills.split(",")
+        }
 
-        const skillsArray = skills.split(",")
         const userId = req.id; // middleware Authentication
         let user = await User.findById(userId);
 
@@ -150,11 +174,14 @@ export const updateProfile = async (req, res) => {
         }
 
         // updating data
-        user.fullName = fullName,
-            user.email = email,
-            user.phoneNumber = phoneNumber,
-            user.profile.bio = bio,
-            user.profile.skills = skillsArray
+        if (fullName) user.fullName = fullName
+        if (email) user.email = email
+        if (phoneNumber) user.phoneNumber = phoneNumber
+        if (bio) user.profile.bio = bio
+        if (skills) user.profile.skills = skillsArray
+
+
+
 
         // we will add resume section later with cloudinary
 
@@ -179,5 +206,9 @@ export const updateProfile = async (req, res) => {
 
     } catch (error) {
         console.log(error);
+        return res.status(500).json({
+            message: "Profile update failed",
+            success: false
+        });
     }
 }

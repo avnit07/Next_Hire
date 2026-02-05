@@ -10,3 +10,8 @@ build/
 
 # coverage
 coverage/
+
+# IDE files
+.idea/
+*.iml
+
