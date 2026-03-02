@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# env files
+.env
+
+# build output
+dist/
+build/
+
+# coverage
+coverage/
+
+# IDE files
+.idea/
+*.iml
+
+# Logs and OS files
+*.log
+.DS_Store
+

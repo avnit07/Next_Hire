@@ -1,0 +1,10 @@
+Initial commit: NextHire — Full-stack MERN job portal
+
+Features:
+- Role-based auth (Student / Recruiter) with JWT in HTTP-only cookies
+- Job posting, search with MongoDB text index, multi-filter listing
+- Application system with status tracking
+- Profile management with resume and photo upload (Cloudinary)
+- Role-aware UI — different experience for students and recruiters
+- Responsive SaaS-style UI with Tailwind CSS
+- Security: Helmet, rate limiting, CORS, sanitized inputs
