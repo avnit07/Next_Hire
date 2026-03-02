@@ -1,4 +1,4 @@
-# NextHire — Full-Stack Job Portal
+## NextHire — Full-Stack Job Portal
 
 NextHire is a full-stack job portal built with the MERN stack.  
 It connects job seekers with recruiters through role-based access, job search, and structured application management.
@@ -36,15 +36,6 @@ Client (React SPA)
                     │
                     └── Cloudinary (file storage)
 ```
-
-**Key design decisions:**
-
-- **Reference over embedding** — Jobs reference Company by ObjectId. Companies can be updated independently without cascading writes to every job document.
-- **Applications as a separate collection** — Avoids unbounded array growth inside Job documents and allows independent pagination.
-- **$text index on jobs** — Compound text index on `title` and `description` replaces `$regex` for O(log n) full-text search.
-- **Disk-based Multer storage** — Files are saved temporarily to disk before Cloudinary upload to prevent OOM errors on large resumes.
-- **JWT in HTTP-only cookies** — Prevents XSS-based token theft. `sameSite: strict` mitigates CSRF.
-
 ---
 
 ## Folder Structure
