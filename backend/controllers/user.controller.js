@@ -101,8 +101,8 @@ export const login = async (req, res) => {
         return res.status(200).cookie("token", token, {
             maxAge: 1 * 24 * 60 * 60 * 1000,
             httpOnly: true,          // Prevents JavaScript access to cookie
-            sameSite: 'strict',      // Mitigates CSRF attacks
-            secure: process.env.NODE_ENV === 'production'
+            sameSite: 'none',      // Mitigates CSRF attacks
+            secure: 'true',
         }).json({ message: `Welcome back ${user.fullName}`, user, success: true });
 
     } catch (error) {
@@ -138,8 +138,8 @@ export const logout = async (req, res) => {
         return res.status(200).cookie("token", "", {
             maxAge: 0,
             httpOnly: true,
-            sameSite: 'strict',
-            secure: process.env.NODE_ENV === 'production'
+            sameSite: 'none',
+            secure: 'true',
         }).json({
             message: "Logged out successfully.",
             success: true
