@@ -65,7 +65,7 @@ const CompanyCreate = () => {
                         </div>
                     </div>
 
-                    <div className='flex items-center gap-3 mt-10 pt-6 border-t border-slate-100'>
+                    <div className='flex flex-col-reverse sm:flex-row items-stretch sm:items-center gap-3 mt-10 pt-6 border-t border-slate-100'>
                         <Button
                             variant="outline"
                             onClick={() => navigate("/admin/companies")}
