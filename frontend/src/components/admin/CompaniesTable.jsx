@@ -58,9 +58,15 @@ const CompaniesTable = () => {
                             filterCompany?.map((company) => (
                                 <TableRow key={company?._id} className="hover:bg-slate-50/80 transition-colors group">
                                     <TableCell className="px-6 py-4">
-                                        <Avatar className="h-10 w-10 rounded-lg border border-slate-200">
-                                            <AvatarImage src={company?.logo || "https://github.com/shadcn.png"} alt={company?.name} />
-                                        </Avatar>
+                                        {company?.logo ? (
+                                            <Avatar className="h-10 w-10 rounded-lg border border-slate-200">
+                                                <AvatarImage src={company.logo} alt={company?.name} />
+                                            </Avatar>
+                                        ) : (
+                                            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+                                                {company?.name?.charAt(0)?.toUpperCase() || "C"}
+                                            </div>
+                                        )}
                                     </TableCell>
                                     <TableCell className="font-medium text-slate-900 px-6 py-4">{company?.name}</TableCell>
                                     <TableCell className="text-slate-600 px-6 py-4">{company?.createdAt?.split("T")[0]}</TableCell>
