@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setApplicationStatus } from '@/redux/applicationSlice';
 import { toast } from 'sonner';
 import { APPLICATION_API_END_POINT } from '@/utils/constant';
-import axios from 'axios';
+import api from '@/utils/axiosInstance';
 
 const shortlistingStatus = ["Accepted", "Rejected"];
 
@@ -34,10 +34,9 @@ const ApplicantsTable = () => {
 
     const statusHandler = async (status, id) => {
         try {
-            const res = await axios.post(
+            const res = await api.post(
                 `${APPLICATION_API_END_POINT}/status/${id}/update`,
                 { status },
-                { withCredentials: true }
             );
             if (res.data.success) {
                 dispatch(setApplicationStatus({ applicationId: id, status: status.toLowerCase() }));

@@ -5,7 +5,7 @@ import DOMPurify from 'dompurify'
 import { formatSalary } from '@/utils/formatSalary'
 import { Users, Clock } from 'lucide-react'
 import { useParams, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '@/utils/axiosInstance'
 import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from '@/utils/constant'
 import { setSingleJob } from '@/redux/jobSlice'
 import { useDispatch, useSelector } from 'react-redux'
@@ -29,9 +29,8 @@ const JobDescription = () => {
     // Fetch Single Job
     const fetchSingleJob = async () => {
         try {
-            const res = await axios.get(
+            const res = await api.get(
                 `${JOB_API_END_POINT}/get/${jobId}`,
-                { withCredentials: true }
             )
 
             if (res.data?.success) {
@@ -56,10 +55,9 @@ const JobDescription = () => {
         }
         try {
             setApplying(true)
-            const res = await axios.post(
+            const res = await api.post(
                 `${APPLICATION_API_END_POINT}/apply/${jobId}`,
                 {},
-                { withCredentials: true }
             )
             if (res.data?.success) {
                 toast.success(res.data.message)

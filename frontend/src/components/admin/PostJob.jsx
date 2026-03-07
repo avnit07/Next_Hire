@@ -6,7 +6,7 @@ import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { useSelector } from 'react-redux'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
-import axios from 'axios'
+import api from '@/utils/axiosInstance'
 import { JOB_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { useNavigate } from 'react-router-dom'
@@ -45,11 +45,10 @@ const PostJob = () => {
         e.preventDefault();
         try {
             setLoading(true);
-            const res = await axios.post(`${JOB_API_END_POINT}/post`, input, {
+            const res = await api.post(`${JOB_API_END_POINT}/post`, input, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                withCredentials: true
             });
             if (res.data.success) {
                 toast.success("Job published successfully");

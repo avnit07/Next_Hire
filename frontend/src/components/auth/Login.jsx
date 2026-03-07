@@ -4,7 +4,7 @@ import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import axios from 'axios'
+import api from '@/utils/axiosInstance'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
@@ -94,11 +94,11 @@ const Login = () => {
         e.preventDefault()
         try {
             dispatch(setLoading(true))
-            const res = await axios.post(`${USER_API_END_POINT}/login`, input, {
+            const res = await api.post(`${USER_API_END_POINT}/login`, input, {
                 headers: { 'Content-Type': 'application/json' },
-                withCredentials: true,
             })
             if (res.data.success) {
+                localStorage.setItem('token', res.data.token);
                 dispatch(setUser(res.data.user))
                 const redirectPath = location.state?.from?.pathname ||
                     (res.data.user.role === 'recruiter' ? '/admin/companies' : '/')

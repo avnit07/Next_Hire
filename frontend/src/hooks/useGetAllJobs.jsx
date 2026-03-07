@@ -1,7 +1,7 @@
 // Hook to fetch public job listings with support for search filters, sorting, and pagination
 import { setAllJobs, setJobsLoading } from '@/redux/jobSlice'
 import { JOB_API_END_POINT } from '@/utils/constant'
-import axios from 'axios'
+import api from '@/utils/axiosInstance'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { normalizeSalaryToLPA } from '@/utils/formatSalary'
@@ -28,7 +28,7 @@ const useGetAllJobs = (page = 1, limit = 10) => {
                     else if (searchedQuery.Sort === "Relevance") params.append('sort', 'relevance');
                 }
 
-                const res = await axios.get(`${JOB_API_END_POINT}/get?${params.toString()}`, { withCredentials: true });
+                const res = await api.get(`${JOB_API_END_POINT}/get?${params.toString()}`);
                 if (res.data.success) {
                     let jobs = res.data.jobs || [];
 

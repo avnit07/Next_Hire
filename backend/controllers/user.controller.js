@@ -43,7 +43,7 @@ export const register = async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await User.create({
+        const newUser = await User.create({
             fullName,
             email,
             phoneNumber,
@@ -54,7 +54,24 @@ export const register = async (req, res) => {
             }
         });
 
-        return res.status(201).json({ message: "Account created successfully.", success: true });
+        // Auto-login: generate token and return user data so the frontend can skip the login page
+        const token = await jwt.sign({ userId: newUser._id }, process.env.SECRET_KEY, { expiresIn: '1d' });
+
+        const user = {
+            _id: newUser._id,
+            fullName: newUser.fullName,
+            email: newUser.email,
+            phoneNumber: newUser.phoneNumber,
+            role: newUser.role,
+            profile: newUser.profile,
+        };
+
+        return res.status(201).cookie("token", token, {
+            maxAge: 1 * 24 * 60 * 60 * 1000,
+            httpOnly: true,
+            sameSite: 'none',
+            secure: 'true',
+        }).json({ message: "Account created successfully.", user, token, success: true });
     } catch (error) {
         return res.status(500).json({ message: "Internal server error", success: false });
     }
@@ -103,7 +120,7 @@ export const login = async (req, res) => {
             httpOnly: true,          // Prevents JavaScript access to cookie
             sameSite: 'none',      // Mitigates CSRF attacks
             secure: 'true',
-        }).json({ message: `Welcome back ${user.fullName}`, user, success: true });
+        }).json({ message: `Welcome back ${user.fullName}`, user, token, success: true });
 
     } catch (error) {
         return res.status(500).json({ message: "Internal server error", success: false });

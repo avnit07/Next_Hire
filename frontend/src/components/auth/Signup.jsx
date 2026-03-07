@@ -4,11 +4,11 @@ import { Label } from '../ui/label'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import api from '@/utils/axiosInstance'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { toast } from 'sonner'
 import { useDispatch, useSelector } from 'react-redux'
-import { setLoading } from '@/redux/authSlice'
+import { setLoading, setUser } from '@/redux/authSlice'
 import {
     Loader2, User, Mail, Phone, Lock, Building2,
     Upload, BriefcaseBusiness, Eye, EyeOff, ArrowLeft, AlertCircle, Check
@@ -173,13 +173,15 @@ const Signup = () => {
         if (input.file) formData.append('file', input.file)
         try {
             dispatch(setLoading(true))
-            const res = await axios.post(`${USER_API_END_POINT}/register`, formData, {
+            const res = await api.post(`${USER_API_END_POINT}/register`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
-                withCredentials: true,
             })
             if (res.data.success) {
-                navigate('/login')
-                toast.success('Account created successfully')
+                // Auto-login: save token and user, redirect based on role
+                localStorage.setItem('token', res.data.token);
+                dispatch(setUser(res.data.user));
+                toast.success(`Welcome to NextHire, ${res.data.user.fullName}!`);
+                navigate(res.data.user.role === 'recruiter' ? '/admin/companies' : '/');
             }
         } catch (error) {
             toast.error(error.response?.data?.message || 'Failed to create account')

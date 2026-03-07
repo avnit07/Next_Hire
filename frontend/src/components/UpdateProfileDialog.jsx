@@ -6,7 +6,7 @@ import { Input } from './ui/input'
 import { Button } from './ui/button'
 import { Loader2, User, Mail, Phone, FileText, Tag, Upload, X } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
-import axios from 'axios'
+import api from '@/utils/axiosInstance'
 import { USER_API_END_POINT } from '@/utils/constant'
 import { setUser } from '@/redux/authSlice'
 import { toast } from 'sonner'
@@ -58,9 +58,8 @@ const UpdateProfileDialog = ({ open, setOpen }) => {
         if (input.profilePhoto) formData.append("profilePhoto", input.profilePhoto);
         try {
             setLoading(true);
-            const res = await axios.patch(`${USER_API_END_POINT}/update`, formData, {
+            const res = await api.patch(`${USER_API_END_POINT}/update`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
-                withCredentials: true
             });
             if (res.data.success) {
                 dispatch(setUser(res.data.user));
